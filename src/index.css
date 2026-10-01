@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --color-cream: #fbf6ee;
+  --color-ink: #3a2f24;
+  --color-muted: #5c5146;
+  --color-line: #e7dccb;
+  --color-wheat: #c4a35a;
+  --color-wheat-strong: #7a5224;
+  --color-wheat-deep: #5f3e18;
+  --color-wheat-soft: #f4e7cc;
+  --color-ok: #2e7a46;
+  --color-ok-soft: #e7f3ea;
+  --color-low: #8a5a12;
+  --color-low-soft: #fbf3dd;
+  --color-alert: #9a3428;
+  --color-alert-soft: #fdecea;
+  --shadow-card: 0 10px 30px rgba(58, 47, 36, 0.06);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-wheat-strong);
+    outline-offset: 3px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+  transform: translateY(-150%);
+  border-radius: 1rem;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
