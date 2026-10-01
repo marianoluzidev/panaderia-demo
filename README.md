@@ -12,6 +12,11 @@ No tiene backend, base de datos ni autenticación. Los datos iniciales viven en 
 - Tailwind CSS
 - React Router
 - Lucide React
+- Inter, incluida en el proyecto
+
+## Apariencia
+
+Los colores, la tipografía y los radios viven en `src/index.css`. El fondo es gris claro, la barra lateral de escritorio es oscura y el acento es un dorado trigo. Verde, ámbar y rojo se usan solo en indicadores y avisos de stock. Inter se carga desde el paquete local, sin fuentes externas.
 
 ## Requisitos
 

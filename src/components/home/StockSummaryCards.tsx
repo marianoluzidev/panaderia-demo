@@ -1,81 +1,44 @@
-import {
-  CircleCheck,
-  PackageX,
-  TriangleAlert,
-  type LucideIcon,
-} from 'lucide-react'
-import { cn } from '../../lib/cn.ts'
-import type { StockSummary } from '../../lib/stockStatus.ts'
-
-type SummaryTone = 'ok' | 'low' | 'alert'
-
-type SummaryItem = {
-  label: string
-  count: number
-  icon: LucideIcon
-  tone: SummaryTone
+type OperationIndicatorsProps = {
+  low: number
+  outOfStock: number
+  pendingReview: number
 }
 
-const toneClassName: Record<SummaryTone, string> = {
-  ok: 'bg-ok-soft text-ok',
-  low: 'bg-low-soft text-low',
-  alert: 'bg-alert-soft text-alert',
-}
+const items = [
+  { key: 'low', label: 'Stock bajo', tone: 'text-low' },
+  { key: 'out', label: 'Sin stock', tone: 'text-alert' },
+  { key: 'pending', label: 'Stock pendiente de revisar', tone: 'text-ink' },
+] as const
 
-type StockSummaryCardsProps = {
-  summary: StockSummary
-}
-
-export function StockSummaryCards({ summary }: StockSummaryCardsProps) {
-  const items: SummaryItem[] = [
-    {
-      label: 'Stock en orden',
-      count: summary.ok,
-      icon: CircleCheck,
-      tone: 'ok',
-    },
-    {
-      label: 'Stock bajo',
-      count: summary.bajo,
-      icon: TriangleAlert,
-      tone: 'low',
-    },
-    {
-      label: 'Sin stock',
-      count: summary.sinStock,
-      icon: PackageX,
-      tone: 'alert',
-    },
-  ]
+export function OperationIndicators({
+  low,
+  outOfStock,
+  pendingReview,
+}: OperationIndicatorsProps) {
+  const counts = {
+    low,
+    out: outOfStock,
+    pending: pendingReview,
+  }
 
   return (
-    <section aria-labelledby="resumen-stock">
-      <h2 id="resumen-stock" className="sr-only">
-        Resumen del stock
+    <section aria-labelledby="indicadores-operacion">
+      <h2 id="indicadores-operacion" className="sr-only">
+        Indicadores de stock
       </h2>
-      <ul className="grid grid-cols-3 gap-2 sm:gap-4">
-        {items.map((item) => {
-          const Icon = item.icon
-
-          return (
-            <li key={item.label}>
-              <article
-                className={cn(
-                  'flex h-full flex-col gap-2 rounded-3xl p-3 sm:gap-3 sm:p-5',
-                  toneClassName[item.tone],
-                )}
-              >
-                <Icon aria-hidden="true" size={22} />
-                <p className="text-2xl font-semibold leading-none sm:text-3xl">
-                  {item.count}
-                </p>
-                <h3 className="text-xs font-semibold leading-tight sm:text-sm">
-                  {item.label}
-                </h3>
-              </article>
-            </li>
-          )
-        })}
+      <ul className="grid grid-cols-3 gap-2 md:gap-3">
+        {items.map((item) => (
+          <li key={item.key}>
+            <article className="flex h-full flex-col gap-1 rounded-surface border border-line bg-white px-3 py-2.5">
+              <p className={`text-xl font-bold tabular-nums md:text-2xl ${item.tone}`}>
+                {counts[item.key]}
+              </p>
+              <h3 className="text-xs leading-tight font-medium text-muted">
+                {item.label}
+              </h3>
+            </article>
+          </li>
+        ))}
       </ul>
     </section>
   )

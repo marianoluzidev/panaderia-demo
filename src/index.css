@@ -1,22 +1,27 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --color-cream: #fbf6ee;
-  --color-ink: #3a2f24;
-  --color-muted: #5c5146;
-  --color-line: #e7dccb;
-  --color-wheat: #c4a35a;
-  --color-wheat-strong: #7a5224;
-  --color-wheat-deep: #5f3e18;
-  --color-wheat-soft: #f4e7cc;
-  --color-ok: #2e7a46;
-  --color-ok-soft: #e7f3ea;
-  --color-low: #8a5a12;
-  --color-low-soft: #fbf3dd;
-  --color-alert: #9a3428;
-  --color-alert-soft: #fdecea;
-  --shadow-card: 0 10px 30px rgba(58, 47, 36, 0.06);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-cream: #f6f7f9;
+  --color-ink: #111827;
+  --color-muted: #667085;
+  --color-line: #e4e7ec;
+  --color-field: #eef1f4;
+  --color-sidebar: #1f252b;
+  --color-sidebar-hover: #2a3138;
+  --color-wheat: #c99532;
+  --color-wheat-strong: #8a621d;
+  --color-wheat-deep: #6e4e16;
+  --color-wheat-soft: #fbf6ea;
+  --color-ok: #067647;
+  --color-ok-soft: #ecfdf3;
+  --color-low: #b54708;
+  --color-low-soft: #fffaeb;
+  --color-alert: #b42318;
+  --color-alert-soft: #fef3f2;
+  --shadow-card: 0 1px 2px rgba(17, 24, 39, 0.04);
+  --radius-surface: 10px;
 }
 
 @layer base {
@@ -32,6 +37,7 @@
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.5;
+    font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -47,7 +53,7 @@
   left: 1rem;
   z-index: 50;
   transform: translateY(-150%);
-  border-radius: 1rem;
+  border-radius: 8px;
   background: #fff;
   padding: 0.75rem 1rem;
   font-weight: 600;

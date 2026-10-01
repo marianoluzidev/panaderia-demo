@@ -7,17 +7,17 @@ import {
   recentConfirmedShipments,
 } from '../../lib/shipments.ts'
 import { useStockDemo } from '../../state/useStockDemo.ts'
-import { Card } from '../ui/Card.tsx'
+import { ShipmentStatusBadge } from '../shipments/ShipmentStatusBadge.tsx'
 
 export function RecentShipments() {
   const { branches, shipments } = useStockDemo()
   const latest = recentConfirmedShipments(shipments)
 
   return (
-    <section aria-labelledby="ultimos-envios">
+    <section aria-labelledby="envios-recientes">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="ultimos-envios" className="text-lg font-semibold">
-          Últimos envíos
+        <h2 id="envios-recientes" className="text-lg font-semibold">
+          Envíos recientes
         </h2>
         <Link
           to="/envios"
@@ -26,35 +26,35 @@ export function RecentShipments() {
           Ver todos
         </Link>
       </div>
-      <Card className="mt-4">
-        {latest.length === 0 ? (
-          <p className="text-base text-muted">Todavía no hay envíos confirmados.</p>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {latest.map((shipment) => (
-              <li key={shipment.id} className="border-b border-line pb-3 last:border-b-0 last:pb-0">
-                <Link
-                  to={`/envios/${shipment.id}`}
-                  className="flex items-center gap-3 rounded-2xl hover:bg-wheat-soft"
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-semibold">
+      {latest.length === 0 ? (
+        <p className="mt-3 text-sm text-muted">Todavía no hay envíos confirmados.</p>
+      ) : (
+        <ul className="mt-3 overflow-hidden rounded-surface border border-line bg-white">
+          {latest.map((shipment) => (
+            <li key={shipment.id} className="border-b border-line last:border-b-0">
+              <Link
+                to={`/envios/${shipment.id}`}
+                className="flex min-h-14 items-center gap-3 px-3 hover:bg-cream"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="truncate text-sm font-semibold">
                       {branchName(branches, shipment.destinationBranchId)}
                     </span>
-                    <span className="mt-1 block text-sm text-muted">
-                      {formatDateTime(shipment.confirmedAt ?? shipment.createdAt)}
-                    </span>
-                    <span className="block text-sm">
-                      {formatArticleLineCount(shipment.items.length)}
-                    </span>
+                    <ShipmentStatusBadge status={shipment.status} />
                   </span>
-                  <ChevronRight aria-hidden="true" className="shrink-0 text-muted" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+                  <span className="mt-0.5 block text-[13px] text-muted">
+                    {formatArticleLineCount(shipment.items.length)}
+                    {' · '}
+                    {formatDateTime(shipment.confirmedAt ?? shipment.createdAt)}
+                  </span>
+                </span>
+                <ChevronRight aria-hidden="true" size={16} className="shrink-0 text-muted" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }

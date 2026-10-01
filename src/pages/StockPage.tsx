@@ -38,7 +38,7 @@ export function StockPage() {
       : 'No encontramos artículos con esa búsqueda.'
 
   return (
-    <div className="flex flex-col gap-3 md:gap-6">
+    <div className="flex flex-col gap-3">
       <StockHeader countLabel={formatArticleCount(results.length, filtered)} />
       <StockFilters
         search={search}
@@ -48,24 +48,10 @@ export function StockPage() {
         onCategoryChange={setCategory}
         onStatusChange={setStatus}
       />
-      <div className="hidden flex-wrap items-center justify-between gap-3 md:flex">
-        <p className="text-base font-medium text-ink" aria-live="polite">
-          {formatArticleCount(results.length, filtered)}
-        </p>
-        {filtered && results.length > 0 ? (
-          <Button variant="secondary" onClick={clearFilters}>
-            Limpiar filtros
-          </Button>
-        ) : null}
-      </div>
       {filtered && results.length > 0 ? (
-        <button
-          type="button"
-          className="min-h-11 self-start rounded-2xl bg-white px-4 text-base font-semibold text-ink ring-1 ring-line transition hover:bg-wheat-soft active:bg-wheat-soft md:hidden"
-          onClick={clearFilters}
-        >
+        <Button variant="secondary" className="self-start" onClick={clearFilters}>
           Limpiar filtros
-        </button>
+        </Button>
       ) : null}
       {results.length === 0 ? (
         <Card className="flex flex-col items-start gap-4">

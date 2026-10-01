@@ -1,22 +1,20 @@
-import { Store, Wheat } from 'lucide-react'
+import { Wheat } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { cn } from '../../lib/cn.ts'
-import { navItems } from './navItems.ts'
+import { sidebarNavItems } from './navItems.ts'
 
 export function Sidebar() {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-line bg-white px-4 py-6 md:flex">
-      <div className="mb-8 flex items-center gap-3 px-2">
-        <span className="flex size-11 items-center justify-center rounded-2xl bg-wheat-soft text-wheat-strong">
-          <Wheat aria-hidden="true" />
-        </span>
-        <div>
-          <p className="text-lg font-semibold leading-tight">Panadería</p>
-          <p className="text-sm text-muted">Stock</p>
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-sidebar md:flex">
+      <div className="flex items-center gap-3 px-5 py-5">
+        <Wheat aria-hidden="true" className="text-wheat" size={20} />
+        <div className="min-w-0">
+          <p className="text-sm font-semibold leading-tight text-white">Panadería</p>
+          <p className="text-xs leading-tight text-white/60">Central</p>
         </div>
       </div>
-      <nav aria-label="Principal" className="flex flex-col gap-2">
-        {navItems.map((item) => {
+      <nav aria-label="Principal" className="flex flex-col px-2 pb-4">
+        {sidebarNavItems.map((item) => {
           const Icon = item.icon
 
           return (
@@ -26,30 +24,26 @@ export function Sidebar() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  'flex min-h-12 items-center gap-3 rounded-2xl px-4 text-base font-medium',
+                  'flex min-h-11 items-center gap-3 border-l-[3px] px-3 text-sm font-medium',
                   isActive
-                    ? 'bg-wheat-soft text-wheat-strong'
-                    : 'text-ink hover:bg-cream',
+                    ? 'border-wheat bg-sidebar-hover text-white'
+                    : 'border-transparent text-white/70 hover:bg-sidebar-hover hover:text-white',
                 )
               }
             >
-              <Icon aria-hidden="true" />
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    aria-hidden="true"
+                    size={18}
+                    className={isActive ? 'text-wheat' : undefined}
+                  />
+                  {item.label}
+                </>
+              )}
             </NavLink>
           )
         })}
-        <NavLink
-          to="/proveedores"
-          className={({ isActive }) =>
-            cn(
-              'flex min-h-12 items-center gap-3 rounded-2xl px-4 text-base font-medium',
-              isActive ? 'bg-wheat-soft text-wheat-strong' : 'text-ink hover:bg-cream',
-            )
-          }
-        >
-          <Store aria-hidden="true" />
-          Proveedores
-        </NavLink>
       </nav>
     </aside>
   )
