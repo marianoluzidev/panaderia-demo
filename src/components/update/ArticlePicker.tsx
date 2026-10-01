@@ -4,7 +4,7 @@ import { cn } from '../../lib/cn.ts'
 import { categoryLabels, formatSpokenQuantity } from '../../lib/labels.ts'
 import { articlesForRealStockUpdate } from '../../lib/updateStock.ts'
 import type { Article } from '../../types/article.ts'
-import { ArticleIllustration } from '../stock/ArticleIllustration.tsx'
+import { CategoryMark } from '../stock/CategoryMark.tsx'
 
 type ArticlePickerProps = {
   articles: readonly Article[]
@@ -36,8 +36,8 @@ export function ArticlePicker({
           <span className="sr-only">Buscar un artículo</span>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted"
-            size={20}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
+            size={18}
           />
           <input
             id="actualizar-buscar"
@@ -48,7 +48,7 @@ export function ArticlePicker({
             }}
             placeholder="Buscar un artículo"
             autoComplete="off"
-            className="min-h-11 w-full rounded-2xl bg-white pr-4 pl-12 text-base text-ink ring-1 ring-line placeholder:text-muted"
+            className="h-11 w-full rounded-lg border border-line bg-field pr-3 pl-10 text-sm text-ink placeholder:text-muted"
           />
         </label>
       </form>
@@ -57,7 +57,7 @@ export function ArticlePicker({
           No encontramos artículos con esa búsqueda.
         </p>
       ) : (
-        <div className="mt-3 flex flex-col gap-2">
+        <div className="mt-3 overflow-hidden rounded-surface border border-line bg-white">
           {results.map((article) => {
             const selected = article.id === selectedId
 
@@ -70,20 +70,18 @@ export function ArticlePicker({
                   onSelect(article.id)
                 }}
                 className={cn(
-                  'flex min-h-14 w-full items-center gap-3 rounded-2xl bg-white p-3 text-left ring-1 transition',
-                  selected
-                    ? 'ring-2 ring-wheat-strong'
-                    : 'ring-line hover:ring-wheat',
+                  'flex min-h-14 w-full items-center gap-3 border-b border-line px-3 text-left last:border-b-0',
+                  selected ? 'bg-wheat-soft' : 'bg-white hover:bg-cream',
                 )}
               >
-                <ArticleIllustration illustration={article.illustration} />
+                <CategoryMark category={article.category} />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{article.name}</span>
-                  <span className="block text-sm text-muted">
+                  <span className="block truncate text-sm font-semibold">{article.name}</span>
+                  <span className="block truncate text-[13px] text-muted">
                     {categoryLabels[article.category]}
                   </span>
                 </span>
-                <span className="shrink-0 text-sm font-semibold">
+                <span className="shrink-0 text-sm font-semibold tabular-nums">
                   {formatSpokenQuantity(article.currentStock, article.unit)}
                 </span>
               </button>

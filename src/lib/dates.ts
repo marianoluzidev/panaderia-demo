@@ -130,6 +130,28 @@ export function formatDateTime(isoDate: string): string {
   return `${day}, ${time}`
 }
 
+/** Fecha corta para listas: “26 sep, 15:00”. */
+export function formatCompactDateTime(isoDate: string): string {
+  const date = new Date(isoDate)
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Sin fecha'
+  }
+
+  const month = new Intl.DateTimeFormat('es-AR', { month: 'short' })
+    .format(date)
+    .replace(/\./g, '')
+    .slice(0, 3)
+    .toLowerCase()
+  const time = new Intl.DateTimeFormat('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(date)
+
+  return `${date.getDate()} ${month}, ${time}`
+}
+
 export function calendarDayKey(isoDate: string): string {
   const date = new Date(isoDate)
 

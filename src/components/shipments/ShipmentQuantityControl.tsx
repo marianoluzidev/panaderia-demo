@@ -31,7 +31,7 @@ export function ShipmentQuantityControl({
       <div className="mt-2 flex items-center gap-2">
         <button
           type="button"
-          className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-ink ring-1 ring-line hover:bg-wheat-soft"
+          className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink hover:bg-cream"
           aria-label={`Disminuir ${label}`}
           onClick={() => {
             onChange(stepRealQuantity(value, unit, -1))
@@ -49,11 +49,11 @@ export function ShipmentQuantityControl({
           autoComplete="off"
           aria-invalid={error !== null}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          className="min-h-11 w-full rounded-2xl bg-white text-center text-lg font-semibold text-ink ring-1 ring-line outline-none focus-visible:ring-2 focus-visible:ring-wheat-strong"
+          className="h-11 w-full rounded-lg border border-line bg-white text-center text-sm font-semibold text-ink tabular-nums outline-none"
         />
         <button
           type="button"
-          className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white text-ink ring-1 ring-line hover:bg-wheat-soft"
+          className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink hover:bg-cream"
           aria-label={`Aumentar ${label}`}
           onClick={() => {
             onChange(stepRealQuantity(value, unit, 1))

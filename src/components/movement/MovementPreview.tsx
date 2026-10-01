@@ -4,9 +4,9 @@ import { nextStockAfterMovement } from '../../lib/movementForm.ts'
 import type { Unit } from '../../types/article.ts'
 import type { ManualMovementType } from '../../types/movement.ts'
 
-const previewClassName: Record<ManualMovementType, string> = {
-  entrada: 'bg-ok-soft text-ok ring-ok/30',
-  salida: 'bg-alert-soft text-alert ring-alert/30',
+const amountClassName: Record<ManualMovementType, string> = {
+  entrada: 'text-ok',
+  salida: 'text-alert',
 }
 
 type MovementPreviewProps = {
@@ -28,13 +28,13 @@ export function MovementPreview({
   return (
     <div
       aria-live="polite"
-      className={cn('rounded-3xl p-4 ring-1', previewClassName[type])}
+      className="rounded-surface border border-line bg-white p-4 text-sm"
     >
       <p>Stock actual: {formatSpokenQuantity(current, unit)}</p>
-      <p className="mt-1">
+      <p className={cn('mt-1 font-semibold', amountClassName[type])}>
         {changeLabel}: {formatSpokenQuantity(quantity, unit)}
       </p>
-      <p className="mt-3 text-base font-semibold">
+      <p className="mt-3 font-semibold">
         Nuevo stock: {formatSpokenQuantity(next, unit)}
       </p>
     </div>

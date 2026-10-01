@@ -40,32 +40,20 @@ export function MovementsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 md:gap-6">
-      <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-4">
+    <div className="flex flex-col gap-3">
+      <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">Movimientos</h1>
-            <Link
-              to="/movimientos/nuevo"
-              className={cn(
-                buttonClassName('primary'),
-                'max-md:min-h-11! max-md:px-3! max-md:text-sm md:hidden!',
-              )}
-            >
-              <Plus aria-hidden="true" size={18} />
-              Nuevo movimiento
-            </Link>
-          </div>
-          <p className="mt-0.5 max-w-2xl text-sm leading-tight text-muted md:mt-1 md:text-base">
-            Revisá las entradas, salidas y actualizaciones de stock
+          <h1 className="text-2xl font-bold tracking-tight max-md:sr-only md:text-[28px] md:leading-9">
+            Movimientos
+          </h1>
+          <p className="text-sm text-muted md:mt-1">
+            Entradas, salidas y ajustes de stock
           </p>
         </div>
-        <Link
-          to="/movimientos/nuevo"
-          className={cn(buttonClassName('primary'), 'max-md:hidden! shrink-0')}
-        >
+        <Link to="/movimientos/nuevo" className={cn(buttonClassName('primary'), 'shrink-0')}>
           <Plus aria-hidden="true" size={18} />
-          Nuevo movimiento
+          <span className="md:hidden">Nuevo</span>
+          <span className="hidden md:inline">Nuevo movimiento</span>
         </Link>
       </header>
 
@@ -79,7 +67,7 @@ export function MovementsPage() {
         </Card>
       ) : (
         <>
-          <MovementSummaryCards summary={summary} />
+          <MovementSummaryCards total={movements.length} summary={summary} />
           <MovementFilters
             search={search}
             type={type}
@@ -87,16 +75,8 @@ export function MovementsPage() {
             onSearchChange={setSearch}
             onTypeChange={setType}
             onDateChange={setDate}
+            onClear={clearFilters}
           />
-          {filtered && listed.length > 0 ? (
-            <Button
-              variant="secondary"
-              className="self-start max-md:min-h-11!"
-              onClick={clearFilters}
-            >
-              Limpiar filtros
-            </Button>
-          ) : null}
           {listed.length === 0 ? (
             <Card className="flex flex-col items-start gap-3">
               <div>

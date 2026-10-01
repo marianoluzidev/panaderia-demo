@@ -27,12 +27,10 @@ export function ShipmentSlip({
   return (
     <section
       aria-labelledby="comprobante-envio"
-      className="rounded-3xl bg-white p-5 ring-2 ring-ink/15"
+      className="rounded-surface border border-line bg-white p-4"
     >
-      <p className="text-sm font-semibold tracking-wide text-muted uppercase">
-        Comprobante de envío
-      </p>
-      <h2 id="comprobante-envio" className="mt-1 text-xl font-semibold">
+      <p className="text-xs font-medium text-muted">Comprobante de envío</p>
+      <h2 id="comprobante-envio" className="mt-1 text-lg font-semibold">
         {branchName(branches, shipment.originBranchId)} →{' '}
         {branchName(branches, shipment.destinationBranchId)}
       </h2>
@@ -44,7 +42,7 @@ export function ShipmentSlip({
         <p className="text-sm">Confirmado: {formatDateTime(shipment.confirmedAt)}</p>
       ) : null}
       {shipment.note ? <p className="mt-2 text-sm">Nota: {shipment.note}</p> : null}
-      <ul className="mt-4 flex flex-col gap-3 border-t border-line pt-4">
+      <ul className="mt-4 border-t border-line">
         {shipment.items.map((item) => {
           const article = articles.find((candidate) => candidate.id === item.articleId)
           const resulting = resultingStockForShipmentItem(
@@ -54,21 +52,26 @@ export function ShipmentSlip({
           )
 
           return (
-            <li key={item.articleId} className="min-w-0">
-              <p className="font-semibold break-words">
-                {shipmentItemLabel(articles, item.articleId)}
-              </p>
-              <p className="text-sm">
+            <li
+              key={item.articleId}
+              className="flex items-start justify-between gap-3 border-b border-line py-2.5 last:border-b-0"
+            >
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">
+                  {shipmentItemLabel(articles, item.articleId)}
+                </p>
+                {resulting !== null && article ? (
+                  <p className="text-[13px] text-muted">
+                    Stock resultante:{' '}
+                    {formatSpokenQuantity(resulting, article.unit)}
+                  </p>
+                ) : null}
+              </div>
+              <p className="shrink-0 text-sm font-semibold tabular-nums">
                 {article
                   ? formatSpokenQuantity(item.quantity, article.unit)
                   : `${item.quantity}`}
               </p>
-              {resulting !== null && article ? (
-                <p className="text-sm text-muted">
-                  Stock resultante:{' '}
-                  {formatSpokenQuantity(resulting, article.unit)}
-                </p>
-              ) : null}
             </li>
           )
         })}

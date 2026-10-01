@@ -178,10 +178,15 @@ function ShipmentEditor({ shipment }: ShipmentEditorProps) {
           Volver
         </Link>
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1
+            className={cn(
+              'text-2xl font-bold tracking-tight md:text-[28px]',
+              shipment ? '' : 'max-md:sr-only',
+            )}
+          >
             {shipment ? 'Editar envío' : 'Nuevo envío'}
           </h1>
-          <p className="mt-1 text-base text-muted">
+          <p className="text-sm text-muted md:mt-1">
             La mercadería sale desde Central
           </p>
         </div>
@@ -208,10 +213,10 @@ function ShipmentEditor({ shipment }: ShipmentEditorProps) {
                       setQuantityError(null)
                     }}
                     className={cn(
-                      'min-h-24 rounded-3xl px-4 text-xl font-semibold ring-1 transition',
+                      'min-h-11 rounded-lg border px-3 text-sm font-semibold',
                       selected
-                        ? 'bg-wheat-soft text-wheat-strong ring-2 ring-wheat-strong'
-                        : 'bg-white text-ink ring-line hover:bg-wheat-soft',
+                        ? 'border-wheat bg-wheat-soft text-ink'
+                        : 'border-line bg-white text-ink hover:bg-cream',
                     )}
                   >
                     {branch.name}
@@ -272,7 +277,7 @@ function ShipmentEditor({ shipment }: ShipmentEditorProps) {
               }}
               rows={3}
               placeholder="Ej.: pedido de la semana"
-              className="mt-2 w-full rounded-2xl bg-white px-4 py-3 text-base text-ink ring-1 ring-line placeholder:text-muted focus-visible:ring-2 focus-visible:ring-wheat-strong"
+              className="mt-2 w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-ink placeholder:text-muted"
             />
           </div>
 
@@ -289,7 +294,7 @@ function ShipmentEditor({ shipment }: ShipmentEditorProps) {
               }}
             />
           ) : (
-            <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-10 -mx-4 flex flex-col gap-2 bg-cream/95 px-4 py-3 backdrop-blur md:static md:mx-0 md:bg-transparent md:p-0">
+            <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-10 -mx-4 flex flex-col gap-2 border-t border-line bg-cream px-4 py-3 md:static md:mx-0 md:border-0 md:bg-transparent md:p-0">
               <button
                 type="button"
                 className={buttonClassName('secondary')}

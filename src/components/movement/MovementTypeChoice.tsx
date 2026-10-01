@@ -7,19 +7,19 @@ const options: readonly {
   type: ManualMovementType
   label: string
   icon: LucideIcon
-  className: string
+  iconClassName: string
 }[] = [
   {
     type: 'entrada',
     label: 'Entrada',
     icon: PackagePlus,
-    className: 'bg-ok-soft text-ok ring-ok/30 hover:ring-ok',
+    iconClassName: 'text-ok',
   },
   {
     type: 'salida',
     label: 'Salida',
     icon: PackageMinus,
-    className: 'bg-alert-soft text-alert ring-alert/30 hover:ring-alert',
+    iconClassName: 'text-alert',
   },
 ]
 
@@ -29,7 +29,7 @@ type MovementTypeChoiceProps = {
 
 export function MovementTypeChoice({ onSelect }: MovementTypeChoiceProps) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid gap-2 sm:grid-cols-2">
       {options.map((option) => {
         const Icon = option.icon
 
@@ -40,12 +40,16 @@ export function MovementTypeChoice({ onSelect }: MovementTypeChoiceProps) {
             onClick={() => {
               onSelect(option.type)
             }}
-            className={cn(
-              'flex min-h-28 flex-col items-center justify-center gap-3 rounded-3xl px-4 py-6 text-xl font-semibold ring-1 transition focus-visible:ring-2 focus-visible:ring-wheat-strong',
-              option.className,
-            )}
+            className="flex min-h-11 items-center gap-3 rounded-lg border border-line bg-white px-3 text-left text-sm font-semibold text-ink hover:bg-cream"
           >
-            <Icon aria-hidden="true" size={32} />
+            <span
+              className={cn(
+                'flex size-8 shrink-0 items-center justify-center rounded-md border border-line',
+                option.iconClassName,
+              )}
+            >
+              <Icon aria-hidden="true" size={16} />
+            </span>
             {option.label}
           </button>
         )

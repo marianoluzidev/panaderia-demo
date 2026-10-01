@@ -1,6 +1,6 @@
 import { categoryLabels, formatSpokenQuantity } from '../../lib/labels.ts'
 import type { Article } from '../../types/article.ts'
-import { ArticleIllustration } from '../stock/ArticleIllustration.tsx'
+import { CategoryMark } from '../stock/CategoryMark.tsx'
 import { Card } from '../ui/Card.tsx'
 
 type SelectedArticleCardProps = {
@@ -17,9 +17,9 @@ export function SelectedArticleCard({
   return (
     <Card className="p-4!">
       <div className="flex items-center gap-3">
-        <ArticleIllustration illustration={article.illustration} />
+        <CategoryMark category={article.category} />
         <div className="min-w-0">
-          <p className="text-lg font-semibold">{article.name}</p>
+          <p className="text-sm font-semibold">{article.name}</p>
           <p className="text-sm text-muted">
             {categoryLabels[article.category]}
           </p>

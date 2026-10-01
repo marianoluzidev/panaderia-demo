@@ -13,7 +13,7 @@ export function ShipmentConfirmPanel({
 }: ShipmentConfirmPanelProps) {
   return (
     <div
-      className="rounded-3xl bg-wheat-soft p-4 ring-1 ring-wheat"
+      className="rounded-surface border border-line bg-white p-4"
       role="region"
       aria-labelledby="confirmar-envio-titulo"
     >

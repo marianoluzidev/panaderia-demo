@@ -1,13 +1,12 @@
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { ArticleIllustration } from '../components/stock/ArticleIllustration.tsx'
+import { CategoryMark } from '../components/stock/CategoryMark.tsx'
 import { ShipmentConfirmPanel } from '../components/shipments/ShipmentConfirmPanel.tsx'
 import { ShipmentNotFound } from '../components/shipments/ShipmentNotFound.tsx'
 import { ShipmentSlip } from '../components/shipments/ShipmentSlip.tsx'
 import { ShipmentStatusBadge } from '../components/shipments/ShipmentStatusBadge.tsx'
 import { buttonClassName } from '../components/ui/buttonStyles.ts'
-import { Card } from '../components/ui/Card.tsx'
 import { formatDateTime } from '../lib/dates.ts'
 import { formatSpokenQuantity } from '../lib/labels.ts'
 import {
@@ -57,40 +56,32 @@ export function ShipmentDetailPage() {
         <ArrowLeft aria-hidden="true" size={18} />
         Volver a Envíos
       </Link>
-      <header>
+      <header className="rounded-surface border border-line bg-white p-4">
         <div className="flex items-start justify-between gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-lg font-semibold">
+            {branchName(branches, shipment.originBranchId)}
+            {' → '}
             {branchName(branches, shipment.destinationBranchId)}
           </h1>
           <ShipmentStatusBadge status={shipment.status} />
         </div>
-        <dl className="mt-3 flex flex-col gap-1 text-base">
+        <dl className="mt-3 flex flex-col gap-1 text-sm">
           <div>
-            <dt className="inline font-semibold">Origen: </dt>
-            <dd className="inline">{branchName(branches, shipment.originBranchId)}</dd>
-          </div>
-          <div>
-            <dt className="inline font-semibold">Destino: </dt>
-            <dd className="inline">
-              {branchName(branches, shipment.destinationBranchId)}
-            </dd>
-          </div>
-          <div>
-            <dt className="inline font-semibold">Creado: </dt>
+            <dt className="inline text-muted">Creado: </dt>
             <dd className="inline">{formatDateTime(shipment.createdAt)}</dd>
           </div>
           {shipment.confirmedAt ? (
             <div>
-              <dt className="inline font-semibold">Confirmado: </dt>
+              <dt className="inline text-muted">Confirmado: </dt>
               <dd className="inline">{formatDateTime(shipment.confirmedAt)}</dd>
             </div>
           ) : null}
         </dl>
-        {shipment.note ? <p className="mt-3 text-base">{shipment.note}</p> : null}
+        {shipment.note ? <p className="mt-3 text-sm">{shipment.note}</p> : null}
       </header>
 
       {shipment.status === 'confirmed' ? (
-        <p className="rounded-2xl bg-ok-soft px-4 py-3 text-sm font-semibold text-ok">
+        <p className="rounded-surface border border-line bg-white px-4 py-3 text-sm text-ink">
           Este envío ya fue confirmado y descontado del stock.
         </p>
       ) : null}
@@ -99,7 +90,7 @@ export function ShipmentDetailPage() {
         <h2 id="articulos-envio" className="text-lg font-semibold">
           Artículos
         </h2>
-        <ul className="mt-3 flex flex-col gap-3">
+        <ul className="mt-3 overflow-hidden rounded-surface border border-line bg-white">
           {shipment.items.map((item) => {
             const article = articles.find((candidate) => candidate.id === item.articleId)
             const resulting = resultingStockForShipmentItem(
@@ -109,32 +100,32 @@ export function ShipmentDetailPage() {
             )
 
             return (
-              <li key={item.articleId}>
-                <Card className="flex items-start gap-3 p-4!">
-                  {article ? (
-                    <ArticleIllustration illustration={article.illustration} />
-                  ) : null}
-                  <div className="min-w-0">
-                    <p className="font-semibold break-words">
-                      {shipmentItemLabel(articles, item.articleId)}
+              <li
+                key={item.articleId}
+                className="flex items-center gap-3 border-b border-line px-3 py-2.5 last:border-b-0"
+              >
+                {article ? <CategoryMark category={article.category} /> : null}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">
+                    {shipmentItemLabel(articles, item.articleId)}
+                  </p>
+                  {article ? null : (
+                    <p className="text-[13px] text-muted">
+                      No se puede confirmar hasta quitarlo.
                     </p>
-                    {article ? (
-                      <p className="mt-1 text-base">
-                        {formatSpokenQuantity(item.quantity, article.unit)}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-sm text-muted">
-                        No se puede confirmar hasta quitarlo.
-                      </p>
-                    )}
-                    {resulting !== null && article ? (
-                      <p className="text-sm text-muted">
-                        Stock resultante:{' '}
-                        {formatSpokenQuantity(resulting, article.unit)}
-                      </p>
-                    ) : null}
-                  </div>
-                </Card>
+                  )}
+                  {resulting !== null && article ? (
+                    <p className="truncate text-[13px] text-muted">
+                      Stock resultante:{' '}
+                      {formatSpokenQuantity(resulting, article.unit)}
+                    </p>
+                  ) : null}
+                </div>
+                {article ? (
+                  <p className="shrink-0 text-sm font-semibold tabular-nums">
+                    {formatSpokenQuantity(item.quantity, article.unit)}
+                  </p>
+                ) : null}
               </li>
             )
           })}

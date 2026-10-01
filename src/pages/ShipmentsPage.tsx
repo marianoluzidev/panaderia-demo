@@ -25,30 +25,17 @@ export function ShipmentsPage() {
   const drafts = shipments.filter((shipment) => shipment.status === 'draft').length
 
   return (
-    <div className="flex flex-col gap-4 md:gap-6">
-      <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-4">
+    <div className="flex flex-col gap-3">
+      <header className="flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">Envíos</h1>
-            <Link
-              to="/envios/nuevo"
-              className={cn(
-                buttonClassName('primary'),
-                'max-md:min-h-11! max-md:px-3! max-md:text-sm md:hidden!',
-              )}
-            >
-              <Plus aria-hidden="true" size={18} />
-              Nuevo envío
-            </Link>
-          </div>
-          <p className="mt-0.5 max-w-2xl text-sm leading-tight text-muted md:mt-1 md:text-base">
-            Mercadería enviada desde Central
+          <h1 className="text-2xl font-bold tracking-tight max-md:sr-only md:text-[28px] md:leading-9">
+            Envíos
+          </h1>
+          <p className="text-sm text-muted md:mt-1">
+            Salidas de mercadería desde Central
           </p>
         </div>
-        <Link
-          to="/envios/nuevo"
-          className={cn(buttonClassName('primary'), 'max-md:hidden! shrink-0')}
-        >
+        <Link to="/envios/nuevo" className={cn(buttonClassName('primary'), 'shrink-0')}>
           <Plus aria-hidden="true" size={18} />
           Nuevo envío
         </Link>

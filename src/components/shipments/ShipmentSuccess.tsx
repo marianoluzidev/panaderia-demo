@@ -11,11 +11,11 @@ type ShipmentSuccessProps = {
 export function ShipmentSuccess({ shipmentId, confirmed }: ShipmentSuccessProps) {
   return (
     <Card className="flex flex-col items-start gap-4" role="status">
-      <span className="flex size-12 items-center justify-center rounded-2xl bg-ok-soft text-ok">
-        <CircleCheck aria-hidden="true" />
+      <span className="flex size-10 items-center justify-center rounded-lg bg-ok-soft text-ok">
+        <CircleCheck aria-hidden="true" size={20} />
       </span>
       <div>
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-lg font-semibold">
           {confirmed ? 'Envío confirmado' : 'Borrador guardado'}
         </h2>
         {confirmed ? (

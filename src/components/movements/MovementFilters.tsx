@@ -1,5 +1,5 @@
-import { Search, SlidersHorizontal } from 'lucide-react'
-import { useState } from 'react'
+import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { useEffect, useId, useState } from 'react'
 import { cn } from '../../lib/cn.ts'
 import type {
   MovementDateFilter,
@@ -15,11 +15,14 @@ const typeOptions: Array<{ value: MovementTypeFilter; label: string }> = [
 ]
 
 const dateOptions: Array<{ value: MovementDateFilter; label: string }> = [
-  { value: 'todos', label: 'Todos' },
+  { value: 'todos', label: 'Todas' },
   { value: 'hoy', label: 'Hoy' },
   { value: '7-dias', label: 'Últimos 7 días' },
   { value: '30-dias', label: 'Últimos 30 días' },
 ]
+
+const searchClassName =
+  'h-11 w-full rounded-lg border border-line bg-field pr-3 pl-10 text-sm text-ink placeholder:text-muted'
 
 type MovementFiltersProps = {
   search: string
@@ -28,6 +31,7 @@ type MovementFiltersProps = {
   onSearchChange: (value: string) => void
   onTypeChange: (value: MovementTypeFilter) => void
   onDateChange: (value: MovementDateFilter) => void
+  onClear: () => void
 }
 
 export function MovementFilters({
@@ -37,195 +41,243 @@ export function MovementFilters({
   onSearchChange,
   onTypeChange,
   onDateChange,
+  onClear,
 }: MovementFiltersProps) {
-  const [dateOpen, setDateOpen] = useState(false)
-  const dateActive = date !== 'todos'
+  const panelId = useId()
+  const [open, setOpen] = useState(false)
+  const activeCount = Number(type !== 'todos') + Number(date !== 'todos')
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
 
   return (
-    <div className="flex flex-col gap-2 md:gap-5">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <form
-          className="min-w-0 flex-1"
-          role="search"
-          onSubmit={(event) => {
-            event.preventDefault()
-          }}
-        >
-          <label htmlFor="buscar-movimiento" className="relative block">
-            <span className="sr-only">Buscar un artículo</span>
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted"
-              size={20}
-            />
-            <input
-              id="buscar-movimiento"
-              type="search"
-              value={search}
-              onChange={(event) => {
-                onSearchChange(event.target.value)
-              }}
-              placeholder="Buscar un artículo"
-              autoComplete="off"
-              className="min-h-11 w-full rounded-2xl bg-white pr-4 pl-12 text-base text-ink ring-1 ring-line placeholder:text-muted hover:ring-wheat focus-visible:ring-wheat-strong md:min-h-12"
-            />
-          </label>
-        </form>
+        <SearchField search={search} onSearchChange={onSearchChange} />
         <button
           type="button"
           className={cn(
-            'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-2xl px-3 text-base font-semibold transition md:hidden',
-            dateActive
-              ? 'bg-wheat-soft text-wheat-strong ring-1 ring-wheat-strong'
-              : 'bg-white text-ink ring-1 ring-line hover:bg-wheat-soft active:bg-wheat-soft',
+            'inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium md:hidden',
+            activeCount > 0
+              ? 'border-wheat bg-wheat-soft text-ink'
+              : 'border-line bg-white text-ink',
           )}
-          aria-expanded={dateOpen}
-          aria-controls="filtros-fecha"
+          aria-expanded={open}
+          aria-controls={panelId}
           onClick={() => {
-            setDateOpen((open) => !open)
+            setOpen((current) => !current)
           }}
         >
           <SlidersHorizontal aria-hidden="true" size={18} />
-          {dateActive ? 'Filtros (1)' : 'Filtros'}
+          {activeCount > 0 ? `Filtros (${activeCount})` : 'Filtros'}
         </button>
+        <div className="hidden items-center gap-2 md:flex">
+          <FilterSelect
+            label="Tipo"
+            value={type}
+            options={typeOptions}
+            onChange={onTypeChange}
+          />
+          <FilterSelect
+            label="Fecha"
+            value={date}
+            options={dateOptions}
+            onChange={onDateChange}
+          />
+        </div>
       </div>
 
-      <div
-        id="filtros-fecha"
-        className={cn(
-          'rounded-2xl bg-white p-3 ring-1 ring-line md:hidden',
-          dateOpen ? '' : 'hidden',
-        )}
-      >
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <p id="filtro-fecha-movil" className="text-base font-medium text-muted">
-            Fecha
-          </p>
-          {dateActive ? (
-            <button
-              type="button"
-              className="min-h-11 rounded-xl px-3 text-base font-semibold text-wheat-strong hover:bg-wheat-soft active:bg-wheat-soft"
-              onClick={() => {
-                onDateChange('todos')
-              }}
-            >
-              Limpiar
-            </button>
-          ) : null}
-        </div>
+      {open ? (
         <div
-          role="group"
-          aria-labelledby="filtro-fecha-movil"
-          className="flex flex-wrap gap-2"
+          id={panelId}
+          role="region"
+          aria-label="Filtros de movimientos"
+          className="rounded-surface border border-line bg-white p-3 md:hidden"
         >
-          {dateOptions.map((option) => (
-            <FilterChip
-              key={option.value}
-              label={option.label}
-              selected={option.value === date}
-              compact
-              onClick={() => {
-                onDateChange(option.value)
+          <OptionGroup
+            label="Tipo"
+            options={typeOptions}
+            value={type}
+            onChange={onTypeChange}
+          />
+          <OptionGroup
+            label="Fecha"
+            options={dateOptions}
+            value={date}
+            onChange={onDateChange}
+          />
+        </div>
+      ) : null}
+
+      {activeCount > 0 ? (
+        <div className="flex flex-wrap items-center gap-2">
+          {type !== 'todos' ? (
+            <RemovableChip
+              label={typeOptions.find((option) => option.value === type)?.label ?? type}
+              onRemove={() => {
+                onTypeChange('todos')
               }}
             />
-          ))}
+          ) : null}
+          {date !== 'todos' ? (
+            <RemovableChip
+              label={dateOptions.find((option) => option.value === date)?.label ?? date}
+              onRemove={() => {
+                onDateChange('todos')
+              }}
+            />
+          ) : null}
+          <button
+            type="button"
+            className="min-h-11 px-2 text-sm font-medium text-wheat-strong"
+            onClick={onClear}
+          >
+            Limpiar
+          </button>
         </div>
-      </div>
-
-      <div
-        className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 md:hidden"
-        role="group"
-        aria-label="Tipo"
-      >
-        {typeOptions.map((option) => (
-          <FilterChip
-            key={option.value}
-            label={option.label}
-            selected={option.value === type}
-            compact
-            onClick={() => {
-              onTypeChange(option.value)
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="hidden flex-col gap-5 md:flex">
-        <FilterGroup
-          label="Tipo"
-          options={typeOptions}
-          value={type}
-          onChange={onTypeChange}
-        />
-        <FilterGroup
-          label="Fecha"
-          options={dateOptions}
-          value={date}
-          onChange={onDateChange}
-        />
-      </div>
+      ) : null}
     </div>
   )
 }
 
-type FilterChipProps = {
-  label: string
-  selected: boolean
-  compact?: boolean
-  onClick: () => void
-}
-
-function FilterChip({ label, selected, compact = false, onClick }: FilterChipProps) {
+function SearchField({
+  search,
+  onSearchChange,
+}: {
+  search: string
+  onSearchChange: (value: string) => void
+}) {
   return (
-    <button
-      type="button"
-      aria-pressed={selected}
-      onClick={onClick}
-      className={cn(
-        'shrink-0 rounded-full px-4 font-semibold transition',
-        compact ? 'min-h-11 text-base' : 'min-h-12 text-base',
-        selected
-          ? 'bg-wheat-strong text-white hover:bg-wheat-deep active:bg-wheat-deep'
-          : 'bg-white text-ink ring-1 ring-line hover:bg-wheat-soft active:bg-wheat-soft',
-      )}
+    <form
+      className="min-w-0 flex-1"
+      role="search"
+      onSubmit={(event) => {
+        event.preventDefault()
+      }}
     >
-      {label}
-    </button>
+      <label htmlFor="buscar-movimiento" className="relative block">
+        <span className="sr-only">Buscar un artículo</span>
+        <Search
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
+          size={18}
+        />
+        <input
+          id="buscar-movimiento"
+          type="search"
+          value={search}
+          onChange={(event) => {
+            onSearchChange(event.target.value)
+          }}
+          placeholder="Buscar un artículo"
+          autoComplete="off"
+          className={searchClassName}
+        />
+      </label>
+    </form>
   )
 }
 
-type FilterGroupProps<T extends string> = {
-  label: string
-  options: Array<{ value: T; label: string }>
-  value: T
-  onChange: (value: T) => void
-}
-
-function FilterGroup<T extends string>({
+function OptionGroup<T extends string>({
   label,
   options,
   value,
   onChange,
-}: FilterGroupProps<T>) {
-  const labelId = `filtro-movimiento-${label.toLowerCase()}`
+}: {
+  label: string
+  options: Array<{ value: T; label: string }>
+  value: T
+  onChange: (value: T) => void
+}) {
+  return (
+    <fieldset className="mt-3 first:mt-0">
+      <legend className="text-xs font-medium text-muted">{label}</legend>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {options.map((option) => {
+          const selected = option.value === value
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => {
+                onChange(option.value)
+              }}
+              className={cn(
+                'min-h-11 rounded-lg px-3 text-sm font-medium',
+                selected
+                  ? 'border border-wheat bg-wheat-soft text-ink'
+                  : 'border border-line bg-white text-muted',
+              )}
+            >
+              {option.label}
+            </button>
+          )
+        })}
+      </div>
+    </fieldset>
+  )
+}
+
+function FilterSelect<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: T
+  options: Array<{ value: T; label: string }>
+  onChange: (value: T) => void
+}) {
+  const id = `filtro-${label.toLowerCase()}`
 
   return (
-    <div>
-      <p id={labelId} className="mb-2 text-base font-medium text-muted">
-        {label}
-      </p>
-      <div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-2">
+    <label htmlFor={id} className="flex items-center gap-2 text-xs font-medium text-muted">
+      {label}
+      <select
+        id={id}
+        value={value}
+        onChange={(event) => {
+          onChange(event.target.value as T)
+        }}
+        className="h-11 rounded-lg border border-line bg-white px-2 text-sm text-ink"
+      >
         {options.map((option) => (
-          <FilterChip
-            key={option.value}
-            label={option.label}
-            selected={option.value === value}
-            onClick={() => {
-              onChange(option.value)
-            }}
-          />
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
         ))}
-      </div>
-    </div>
+      </select>
+    </label>
+  )
+}
+
+function RemovableChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <button
+      type="button"
+      className="inline-flex min-h-11 items-center gap-1 rounded-md border border-line bg-white px-2.5 text-xs font-medium text-ink"
+      aria-label={`Quitar filtro ${label}`}
+      onClick={onRemove}
+    >
+      {label}
+      <X aria-hidden="true" size={14} />
+    </button>
   )
 }

@@ -1,7 +1,8 @@
 import { Search } from 'lucide-react'
 import { useState } from 'react'
-import { ArticleIllustration } from '../stock/ArticleIllustration.tsx'
 import { categoryLabels, formatSpokenQuantity } from '../../lib/labels.ts'
+import { buttonClassName } from '../ui/buttonStyles.ts'
+import { CategoryMark } from '../stock/CategoryMark.tsx'
 import { parseRealQuantity } from '../../lib/quantityInput.ts'
 import {
   insufficientStockMessage,
@@ -79,8 +80,8 @@ export function ShipmentArticlePicker({
           <span className="sr-only">Buscar un artículo</span>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-muted"
-            size={20}
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
+            size={18}
           />
           <input
             id="envio-buscar"
@@ -91,7 +92,7 @@ export function ShipmentArticlePicker({
             }}
             placeholder="Buscar un artículo"
             autoComplete="off"
-            className="min-h-12 w-full rounded-2xl bg-white pr-4 pl-12 text-base text-ink ring-1 ring-line placeholder:text-muted focus-visible:ring-2 focus-visible:ring-wheat-strong"
+            className="h-11 w-full rounded-lg border border-line bg-field pr-3 pl-10 text-sm text-ink placeholder:text-muted"
           />
         </label>
       </form>
@@ -100,60 +101,55 @@ export function ShipmentArticlePicker({
           No encontramos artículos con esa búsqueda.
         </p>
       ) : (
-        <ul className="mt-3 flex flex-col gap-3">
+        <ul className="mt-3 overflow-hidden rounded-surface border border-line bg-white">
           {visible.map((article) => {
             const selected = items.find((item) => item.articleId === article.id)
             const message = rowError?.id === article.id ? rowError.message : null
 
             return (
-              <li
-                key={article.id}
-                className="rounded-3xl bg-white p-4 shadow-card ring-1 ring-line"
-              >
-                <div className="flex items-start gap-3">
-                  <ArticleIllustration illustration={article.illustration} />
-                  <div className="min-w-0">
-                    <p className="font-semibold break-words">{article.name}</p>
-                    <p className="text-sm text-muted">
+              <li key={article.id} className="border-b border-line px-3 py-3 last:border-b-0">
+                <div className="flex items-center gap-3">
+                  <CategoryMark category={article.category} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{article.name}</p>
+                    <p className="truncate text-[13px] text-muted">
                       {categoryLabels[article.category]}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">
-                      Disponible:{' '}
+                      {' · Disponible '}
                       {formatSpokenQuantity(article.currentStock, article.unit)}
                     </p>
                     {selected ? (
-                      <p className="text-sm text-muted">
+                      <p className="truncate text-[13px] text-muted">
                         En este envío:{' '}
                         {formatSpokenQuantity(selected.quantity, article.unit)}
                       </p>
                     ) : null}
                   </div>
                 </div>
-                <div className="mt-3">
-                  <ShipmentQuantityControl
-                    inputId={`envio-cantidad-${article.id}`}
-                    unit={article.unit}
-                    label="Cantidad"
-                    value={quantities[article.id] ?? '1'}
-                    onChange={(value) => {
-                      setQuantities((current) => ({ ...current, [article.id]: value }))
-                      setRowError(null)
+                <div className="mt-2 flex items-end gap-2">
+                  <div className="min-w-0 flex-1">
+                    <ShipmentQuantityControl
+                      inputId={`envio-cantidad-${article.id}`}
+                      unit={article.unit}
+                      label="Cantidad"
+                      value={quantities[article.id] ?? '1'}
+                      onChange={(value) => {
+                        setQuantities((current) => ({ ...current, [article.id]: value }))
+                        setRowError(null)
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className={buttonClassName('primary')}
+                    disabled={article.currentStock <= 0}
+                    onClick={() => {
+                      addArticle(article)
                     }}
-                  />
+                  >
+                    Agregar
+                  </button>
                 </div>
-                {message ? (
-                  <p className="mt-2 text-sm text-alert">{message}</p>
-                ) : null}
-                <button
-                  type="button"
-                  className="mt-3 min-h-12 w-full rounded-2xl bg-wheat-strong px-4 text-base font-semibold text-white hover:bg-wheat-deep active:bg-wheat-deep disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={article.currentStock <= 0}
-                  onClick={() => {
-                    addArticle(article)
-                  }}
-                >
-                  Agregar
-                </button>
+                {message ? <p className="mt-2 text-sm text-alert">{message}</p> : null}
               </li>
             )
           })}

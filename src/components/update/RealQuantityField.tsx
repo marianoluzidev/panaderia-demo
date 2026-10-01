@@ -44,13 +44,13 @@ export function RealQuantityField({
 
   return (
     <div>
-      <label htmlFor={inputId} className="text-lg font-semibold">
+      <label htmlFor={inputId} className="text-sm font-semibold">
         {question}
       </label>
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-2 flex items-center gap-2">
         <button
           type="button"
-          className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white text-ink ring-1 ring-line hover:bg-wheat-soft disabled:opacity-60"
+          className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink hover:bg-cream disabled:opacity-60"
           aria-label={decreaseLabel}
           disabled={disabled}
           onClick={() => {
@@ -71,11 +71,11 @@ export function RealQuantityField({
           disabled={disabled}
           aria-invalid={error !== null}
           aria-describedby={describedBy || undefined}
-          className="min-h-14 w-full rounded-2xl bg-white text-center text-3xl font-semibold text-ink ring-1 ring-line outline-none focus-visible:ring-2 focus-visible:ring-wheat-strong disabled:opacity-60"
+          className="h-11 w-full rounded-lg border border-line bg-white text-center text-2xl font-semibold text-ink outline-none disabled:opacity-60"
         />
         <button
           type="button"
-          className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white text-ink ring-1 ring-line hover:bg-wheat-soft disabled:opacity-60"
+          className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink hover:bg-cream disabled:opacity-60"
           aria-label={increaseLabel}
           disabled={disabled}
           onClick={() => {

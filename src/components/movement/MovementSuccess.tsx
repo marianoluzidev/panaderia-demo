@@ -23,11 +23,11 @@ export function MovementSuccess({
 
   return (
     <Card className="flex flex-col items-start gap-4" role="status">
-      <span className="flex size-12 items-center justify-center rounded-2xl bg-ok-soft text-ok">
-        <CircleCheck aria-hidden="true" />
+      <span className="flex size-10 items-center justify-center rounded-lg bg-ok-soft text-ok">
+        <CircleCheck aria-hidden="true" size={20} />
       </span>
       <div>
-        <h2 className="text-xl font-semibold">{title}</h2>
+        <h2 className="text-lg font-semibold">{title}</h2>
         <p className="mt-1 text-base">
           {article.name} ahora tiene {formatSpokenQuantity(quantity, article.unit)}
         </p>

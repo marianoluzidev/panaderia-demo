@@ -147,10 +147,10 @@ export function NewMovementPage() {
           Volver
         </Link>
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight md:text-[28px]">
             {copy?.title ?? 'Registrar movimiento'}
           </h1>
-          <p className="mt-1 max-w-2xl text-base text-muted">
+          <p className="mt-1 max-w-2xl text-sm text-muted">
             {copy?.text ?? 'Elegí si la mercadería entra o sale del stock'}
           </p>
         </div>
@@ -174,7 +174,7 @@ export function NewMovementPage() {
           }}
         >
           <div className="flex flex-col gap-4 lg:col-span-2">
-            <div className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-2 ring-1 ring-line">
+            <div className="flex items-center justify-between gap-3 rounded-surface border border-line bg-white px-3 py-2">
               <span
                 className={cn(
                   'inline-flex items-center gap-2 font-semibold',
@@ -228,7 +228,7 @@ export function NewMovementPage() {
             ) : null}
             {article && !showPicker && noStockForExit && quantityError ? (
               <p
-                className="rounded-3xl bg-alert-soft p-4 text-alert ring-1 ring-alert/30"
+                className="rounded-surface border border-line bg-white p-4 text-sm text-alert"
                 role="status"
               >
                 {quantityError}
@@ -261,10 +261,10 @@ export function NewMovementPage() {
                   }}
                   placeholder={copy.note}
                   autoComplete="off"
-                  className="mt-2 min-h-11 w-full rounded-2xl bg-white px-4 text-base text-ink ring-1 ring-line placeholder:text-muted"
+                  className="mt-2 h-11 w-full rounded-lg border border-line bg-field px-3 text-sm text-ink placeholder:text-muted"
                 />
               </label>
-              <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-10 -mx-4 bg-cream/95 px-4 py-3 backdrop-blur md:static md:z-auto md:mx-0 md:bg-transparent md:p-0">
+              <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-10 -mx-4 border-t border-line bg-cream px-4 py-3 md:static md:z-auto md:mx-0 md:border-0 md:bg-transparent md:p-0">
                 <Button type="submit" className="w-full" disabled={!canSave}>
                   {copy.save}
                 </Button>

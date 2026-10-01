@@ -3,7 +3,7 @@ import { shipmentStatusLabels } from '../../lib/shipments.ts'
 import type { ShipmentStatus } from '../../types/shipment.ts'
 
 const statusClassName: Record<ShipmentStatus, string> = {
-  draft: 'bg-low-soft text-low',
+  draft: 'bg-wheat-soft text-wheat-strong',
   confirmed: 'bg-ok-soft text-ok',
 }
 

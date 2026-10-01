@@ -1,13 +1,30 @@
 import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { cn } from '../../lib/cn.ts'
-import { formatDateTime } from '../../lib/dates.ts'
-import { formatQuantity, movementTypeLabels } from '../../lib/labels.ts'
+import { formatCompactDateTime } from '../../lib/dates.ts'
+import { formatQuantity } from '../../lib/labels.ts'
 import type { MovementGroup } from '../../lib/movementList.ts'
 import { formatMovementListChange } from '../../lib/movements.ts'
-import { movementIcon, movementTone } from '../../lib/movementVisuals.ts'
+import { movementIcon } from '../../lib/movementVisuals.ts'
 import type { Unit } from '../../types/article.ts'
-import type { StockMovement } from '../../types/movement.ts'
+import type { MovementType, StockMovement } from '../../types/movement.ts'
+
+const shortTypeLabels: Record<MovementType, string> = {
+  entrada: 'Entrada',
+  salida: 'Salida',
+  conteo: 'Stock real',
+  ajuste: 'Ajuste',
+}
+
+const amountClassName: Record<MovementType, string> = {
+  entrada: 'text-ok',
+  salida: 'text-alert',
+  conteo: 'text-wheat-strong',
+  ajuste: 'text-ink',
+}
+
+const columns =
+  'lg:grid lg:grid-cols-[minmax(0,1.3fr)_6.5rem_8.5rem_8rem_8.5rem_minmax(0,1fr)_1.25rem] lg:items-center lg:gap-3'
 
 type MovementListProps = {
   groups: readonly MovementGroup[]
@@ -15,18 +32,32 @@ type MovementListProps = {
 
 export function MovementList({ groups }: MovementListProps) {
   return (
-    <div className="flex flex-col gap-3 md:gap-6">
+    <div className="overflow-hidden rounded-surface border border-line bg-white">
+      <div
+        className={cn(
+          'hidden border-b border-line px-3 py-2 text-xs font-medium text-muted lg:grid',
+          'lg:grid-cols-[minmax(0,1.3fr)_6.5rem_8.5rem_8rem_8.5rem_minmax(0,1fr)_1.25rem] lg:gap-3',
+        )}
+      >
+        <span className="pl-11">Artículo</span>
+        <span>Tipo</span>
+        <span>Fecha</span>
+        <span>Cambio</span>
+        <span>Stock resultante</span>
+        <span>Nota</span>
+        <span className="sr-only">Abrir</span>
+      </div>
       {groups.map((group) => (
         <section key={group.key} aria-labelledby={`dia-${group.key}`}>
           <h2
             id={`dia-${group.key}`}
-            className="text-sm font-semibold text-muted md:text-base"
+            className="border-b border-line bg-cream px-3 py-1 text-xs font-medium text-muted"
           >
             {group.label}
           </h2>
-          <ol className="mt-1 flex flex-col gap-2 md:mt-3 md:gap-3">
+          <ol>
             {group.movements.map((item) => (
-              <li key={item.movement.id}>
+              <li key={item.movement.id} className="border-b border-line last:border-b-0">
                 <MovementRow
                   articleId={item.article.id}
                   name={item.article.name}
@@ -51,55 +82,64 @@ type MovementRowProps = {
 
 function MovementRow({ articleId, name, unit, movement }: MovementRowProps) {
   const Icon = movementIcon[movement.type]
-  const tone = movementTone[movement.type]
+  const change = formatMovementListChange(movement, unit)
+  const when = formatCompactDateTime(movement.date)
 
   return (
     <Link
       to={`/stock/${articleId}`}
-      className="flex items-start gap-2.5 rounded-3xl bg-white p-2 shadow-card ring-1 ring-line transition hover:ring-wheat-strong active:bg-cream md:gap-3 md:p-4 lg:items-center"
+      className={cn('flex min-h-14 items-center gap-3 px-3 py-1.5 hover:bg-cream', columns)}
     >
-      <span
-        className={cn(
-          'flex size-10 shrink-0 items-center justify-center rounded-2xl md:size-11',
-          tone.icon,
-        )}
-      >
-        <Icon aria-hidden="true" size={20} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="flex items-start justify-between gap-2">
-          <span className="font-semibold leading-tight">{name}</span>
-          <span className="flex shrink-0 items-center gap-0.5 lg:hidden">
-            <span className={cn('text-sm font-semibold leading-tight', tone.amount)}>
-              {formatMovementListChange(movement, unit)}
-            </span>
-            <ChevronRight aria-hidden="true" className="text-muted" size={16} />
+      <span className="flex min-w-0 flex-1 items-center gap-3">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-line text-muted">
+          <Icon aria-hidden="true" size={16} />
+        </span>
+        <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="min-w-0 flex-1 truncate text-sm leading-5 font-semibold">{name}</span>
+          <span
+            className={cn(
+              'shrink-0 text-sm font-semibold whitespace-nowrap tabular-nums lg:hidden',
+              amountClassName[movement.type],
+            )}
+          >
+            {change}
           </span>
+          <ChevronRight
+            aria-hidden="true"
+            size={16}
+            className="shrink-0 text-muted lg:hidden"
+          />
         </span>
-        <span className="block text-sm leading-tight text-muted">
-          {movementTypeLabels[movement.type]}
-        </span>
-        <time
-          dateTime={movement.date}
-          className="block text-sm leading-tight text-muted"
-        >
-          {formatDateTime(movement.date)}
-        </time>
-        <span className="block text-sm leading-tight text-muted lg:hidden">
-          Stock resultante: {formatQuantity(movement.resultingStock, unit)}
+        <span className="block truncate text-[13px] leading-4 text-muted lg:hidden">
+          {shortTypeLabels[movement.type]}
+          {' · '}
+          <time dateTime={movement.date}>{when}</time>
         </span>
         {movement.note ? (
-          <span className="block text-sm leading-tight">{movement.note}</span>
+          <span className="block truncate text-[13px] leading-4 text-muted lg:hidden">{movement.note}</span>
         ) : null}
-      </span>
-      <span className="hidden shrink-0 text-right lg:block">
-        <span className={cn('block font-semibold', tone.amount)}>
-          {formatMovementListChange(movement, unit)}
-        </span>
-        <span className="block text-sm text-muted">
-          Stock resultante: {formatQuantity(movement.resultingStock, unit)}
         </span>
       </span>
+      <span className="hidden text-sm lg:block">{shortTypeLabels[movement.type]}</span>
+      <time dateTime={movement.date} className="hidden text-sm text-muted lg:block">
+        {when}
+      </time>
+      <span
+        className={cn(
+          'hidden text-sm font-semibold whitespace-nowrap tabular-nums lg:block',
+          amountClassName[movement.type],
+        )}
+      >
+        {change}
+      </span>
+      <span className="hidden text-sm text-muted tabular-nums lg:block">
+        {formatQuantity(movement.resultingStock, unit)}
+      </span>
+      <span className="hidden truncate text-sm text-muted lg:block">
+        {movement.note ?? '—'}
+      </span>
+      <ChevronRight aria-hidden="true" size={16} className="hidden shrink-0 text-muted lg:block" />
     </Link>
   )
 }

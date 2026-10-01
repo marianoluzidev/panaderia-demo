@@ -1,5 +1,5 @@
-import { ArticleIllustration } from '../stock/ArticleIllustration.tsx'
 import { formatSpokenQuantity } from '../../lib/labels.ts'
+import { CategoryMark } from '../stock/CategoryMark.tsx'
 import { parseRealQuantity } from '../../lib/quantityInput.ts'
 import { replaceShipmentQuantity, shipmentItemLabel } from '../../lib/shipments.ts'
 import type { Article } from '../../types/article.ts'
@@ -29,7 +29,7 @@ export function ShipmentDraftSummary({
       {items.length === 0 ? (
         <p className="mt-3 text-base text-muted">Todavía no agregaste artículos.</p>
       ) : (
-        <ul className="mt-3 flex flex-col gap-3">
+        <ul className="mt-3 overflow-hidden rounded-surface border border-line bg-white">
           {items.map((item) => {
             const article = articles.find((candidate) => candidate.id === item.articleId)
 
@@ -37,12 +37,12 @@ export function ShipmentDraftSummary({
               return (
                 <li
                   key={item.articleId}
-                  className="rounded-3xl bg-white p-4 ring-1 ring-line"
+                  className="flex items-center justify-between gap-3 border-b border-line px-3 py-3 last:border-b-0"
                 >
-                  <p className="font-semibold">Artículo no disponible</p>
+                  <p className="text-sm font-semibold">Artículo no disponible</p>
                   <button
                     type="button"
-                    className="mt-3 min-h-11 text-sm font-semibold text-alert underline-offset-2 hover:underline"
+                    className="min-h-11 shrink-0 px-2 text-sm font-semibold text-alert"
                     onClick={() => {
                       onItemsChange(
                         items.filter((current) => current.articleId !== item.articleId),
@@ -61,21 +61,33 @@ export function ShipmentDraftSummary({
             return (
               <li
                 key={item.articleId}
-                className="rounded-3xl bg-white p-4 shadow-card ring-1 ring-line"
+                className="border-b border-line px-3 py-3 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
-                  <ArticleIllustration illustration={article.illustration} />
-                  <div className="min-w-0">
-                    <p className="font-semibold break-words">
+                  <CategoryMark category={article.category} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">
                       {shipmentItemLabel(articles, item.articleId)}
                     </p>
-                    <p className="text-sm text-muted">
+                    <p className="truncate text-[13px] text-muted">
                       Disponible:{' '}
                       {formatSpokenQuantity(article.currentStock, article.unit)}
                     </p>
                   </div>
+                  <button
+                    type="button"
+                    className="min-h-11 shrink-0 px-2 text-sm font-semibold text-wheat-strong"
+                    onClick={() => {
+                      onItemsChange(
+                        items.filter((current) => current.articleId !== item.articleId),
+                        null,
+                      )
+                    }}
+                  >
+                    Quitar
+                  </button>
                 </div>
-                <div className="mt-3">
+                <div className="mt-2">
                   <ShipmentQuantityControl
                     inputId={`envio-resumen-${item.articleId}`}
                     unit={article.unit}
@@ -96,18 +108,6 @@ export function ShipmentDraftSummary({
                     }}
                   />
                 </div>
-                <button
-                  type="button"
-                  className="mt-3 min-h-11 text-sm font-semibold text-wheat-strong underline-offset-2 hover:underline"
-                  onClick={() => {
-                    onItemsChange(
-                      items.filter((current) => current.articleId !== item.articleId),
-                      null,
-                    )
-                  }}
-                >
-                  Quitar
-                </button>
               </li>
             )
           })}
